@@ -1,4 +1,4 @@
-module example.com/m
+module github.com/chent03/apt-server
 
 go 1.13
 
