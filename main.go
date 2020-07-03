@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,10 +15,16 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		port = "3000"
+		log.Fatal("No port number provided")
 	}
 
 	r := mux.NewRouter()
