@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -21,6 +22,11 @@ type SignupForm struct {
 type LoginForm struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type Payload struct {
+	Success      bool   `json:"success"`
+	ErrorMessage string `json:"message,omitempty"`
 }
 
 func NewUsers(us models.UserService) *Users {
@@ -45,7 +51,10 @@ func (u *Users) Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprintf(w, "Person: %+v", form)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(&Payload{
+		Success: true,
+	})
 }
 
 func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +76,8 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	fmt.Fprintf(w, "Person: %+v", user.Name)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
 }
 
 func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {

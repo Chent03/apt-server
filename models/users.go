@@ -13,10 +13,10 @@ type User struct {
 	gorm.Model
 	Name         string
 	Email        string `gorm:"not null; unique_index"`
-	Password     string `gorm:"-"`
-	PasswordHash string `gorm:"not null"`
-	Remember     string `gorm:"-"`
-	RememberHash string `gorm:"not null; unique_index"`
+	Password     string `gorm:"-" json:"-"`
+	PasswordHash string `gorm:"not null" json:"-"`
+	Remember     string `gorm:"-" json:"-"`
+	RememberHash string `gorm:"not null; unique_index" json:"-"`
 	IsAdmin      bool
 }
 
