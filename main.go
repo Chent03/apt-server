@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/chent03/apt-server/controllers"
 	"github.com/chent03/apt-server/models"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -31,8 +32,11 @@ func main() {
 	us.AutoMigrate()
 
 	fmt.Println("connected!")
+	userC := controllers.NewUsers(us)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", helloHandler)
+	r.HandleFunc("/api/register", userC.Register).Methods("POST")
+	r.HandleFunc("/api/login", userC.Login).Methods("GET")
 	http.ListenAndServe(":"+GetPortNumber(), r)
 }
