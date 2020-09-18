@@ -11,7 +11,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Name         string
+	FirstName    string `gorm:"not null"`
+	LastName     string `gorm:"not null"`
 	Email        string `gorm:"not null; unique_index"`
 	Password     string `gorm:"-" json:"-"`
 	PasswordHash string `gorm:"not null" json:"-"`

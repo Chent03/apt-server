@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/chent03/apt-server/models"
@@ -14,9 +12,10 @@ type Users struct {
 }
 
 type SignupForm struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 type LoginForm struct {
@@ -39,20 +38,26 @@ func (u *Users) Register(w http.ResponseWriter, r *http.Request) {
 	var form SignupForm
 	err := parseResponse(r, &form)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+			Success:      false,
+			ErrorMessage: err.Error(),
+		})
 		return
 	}
 	user := models.User{
-		Name:     form.Name,
-		Email:    form.Email,
-		Password: form.Password,
+		FirstName: form.FirstName,
+		LastName:  form.LastName,
+		Email:     form.Email,
+		Password:  form.Password,
 	}
 	if err := u.us.Create(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+			Success:      false,
+			ErrorMessage: err.Error(),
+		})
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(&Payload{
+	respondWithPayload(w, http.StatusInternalServerError, &Payload{
 		Success: true,
 	})
 }
@@ -61,23 +66,29 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	var form LoginForm
 	err := parseResponse(r, &form)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+			Success:      false,
+			ErrorMessage: err.Error(),
+		})
 		return
 	}
 	user, err := u.us.Authenticate(form.Email, form.Password)
 	if err != nil {
-		switch err {
-		case models.ErrNotFound:
-			fmt.Println(w, "Invalid email address")
-		case models.ErrInvalidPassword:
-			fmt.Fprintln(w, "Invalid password provided")
-		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+			Success:      false,
+			ErrorMessage: err.Error(),
+		})
+		// switch err {
+		// case models.ErrNotFound:
+		// 	fmt.Println(w, "Invalid email address")
+		// case models.ErrInvalidPassword:
+		// 	fmt.Fprintln(w, "Invalid password provided")
+		// default:
+		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+		// }
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	respondWithPayload(w, http.StatusInternalServerError, user)
 }
 
 func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {
