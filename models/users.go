@@ -11,14 +11,14 @@ import (
 
 type User struct {
 	gorm.Model
-	FirstName    string `gorm:"not null"; json:"firstName"`
-	LastName     string `gorm:"not null"; json:"lastName"`
-	Email        string `gorm:"not null; unique_index"; json:"email"`
+	FirstName    string `json:"firstName"; gorm:"not null";`
+	LastName     string `json:"lastName"; gorm:"not null";`
+	Email        string `json:"email"; gorm:"not null; unique_index";`
 	Password     string `gorm:"-" json:"-"`
 	PasswordHash string `gorm:"not null" json:"-"`
 	Remember     string `gorm:"-" json:"-"`
 	RememberHash string `gorm:"not null; unique_index" json:"-"`
-	IsAdmin      bool   `json:"isAdmin"`
+	IsAdmin      bool   `json:"isAdmin";`
 }
 
 var (
