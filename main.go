@@ -9,6 +9,7 @@ import (
 	"github.com/chent03/apt-server/models"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,5 +39,6 @@ func main() {
 	r.HandleFunc("/", helloHandler)
 	r.HandleFunc("/api/register", userC.Register).Methods("POST")
 	r.HandleFunc("/api/login", userC.Login).Methods("POST")
-	http.ListenAndServe(":"+GetPortNumber(), r)
+	handler := cors.Default().Handler(r)
+	http.ListenAndServe(":"+GetPortNumber(), handler)
 }
