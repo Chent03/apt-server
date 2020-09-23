@@ -24,8 +24,9 @@ type LoginForm struct {
 }
 
 type Payload struct {
-	Success      bool   `json:"success"`
-	ErrorMessage string `json:"message,omitempty"`
+	Success      bool        `json:"success"`
+	Data         interface{} `json:"data"`
+	ErrorMessage string      `json:"message,omitempty"`
 }
 
 func NewUsers(us models.UserService) *Users {
@@ -59,6 +60,7 @@ func (u *Users) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithPayload(w, http.StatusAccepted, &Payload{
 		Success: true,
+		Data:    user,
 	})
 }
 
@@ -88,7 +90,10 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 		// }
 		return
 	}
-	respondWithPayload(w, http.StatusAccepted, user)
+	respondWithPayload(w, http.StatusAccepted, &Payload{
+		Success: true,
+		Data:    user,
+	})
 }
 
 func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {
