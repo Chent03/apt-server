@@ -37,6 +37,6 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", helloHandler)
 	r.HandleFunc("/api/register", userC.Register).Methods("POST")
-	r.HandleFunc("/api/login", userC.Login).Methods("GET")
+	r.HandleFunc("/api/login", userC.Login).Methods("POST")
 	http.ListenAndServe(":"+GetPortNumber(), r)
 }

@@ -38,7 +38,7 @@ func (u *Users) Register(w http.ResponseWriter, r *http.Request) {
 	var form SignupForm
 	err := parseResponse(r, &form)
 	if err != nil {
-		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+		respondWithPayload(w, http.StatusBadRequest, &Payload{
 			Success:      false,
 			ErrorMessage: err.Error(),
 		})
@@ -51,13 +51,13 @@ func (u *Users) Register(w http.ResponseWriter, r *http.Request) {
 		Password:  form.Password,
 	}
 	if err := u.us.Create(&user); err != nil {
-		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+		respondWithPayload(w, http.StatusBadRequest, &Payload{
 			Success:      false,
 			ErrorMessage: err.Error(),
 		})
 		return
 	}
-	respondWithPayload(w, http.StatusInternalServerError, &Payload{
+	respondWithPayload(w, http.StatusAccepted, &Payload{
 		Success: true,
 	})
 }
@@ -66,7 +66,7 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	var form LoginForm
 	err := parseResponse(r, &form)
 	if err != nil {
-		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+		respondWithPayload(w, http.StatusBadRequest, &Payload{
 			Success:      false,
 			ErrorMessage: err.Error(),
 		})
@@ -74,7 +74,7 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := u.us.Authenticate(form.Email, form.Password)
 	if err != nil {
-		respondWithPayload(w, http.StatusInternalServerError, &Payload{
+		respondWithPayload(w, http.StatusBadRequest, &Payload{
 			Success:      false,
 			ErrorMessage: err.Error(),
 		})
@@ -88,7 +88,7 @@ func (u *Users) Login(w http.ResponseWriter, r *http.Request) {
 		// }
 		return
 	}
-	respondWithPayload(w, http.StatusInternalServerError, user)
+	respondWithPayload(w, http.StatusAccepted, user)
 }
 
 func (u *Users) signIn(w http.ResponseWriter, user *models.User) error {
