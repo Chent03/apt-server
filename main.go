@@ -32,7 +32,7 @@ func main() {
 	us.DestructiveReset()
 	us.AutoMigrate()
 
-	fmt.Println("connected!")
+	fmt.Println("connected!!")
 	userC := controllers.NewUsers(us)
 
 	r := mux.NewRouter()
