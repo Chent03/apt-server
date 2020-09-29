@@ -9,17 +9,6 @@ type userGorm struct {
 	db *gorm.DB
 }
 
-func newUserGorm(connectionInfo string) (*userGorm, error) {
-	db, err := gorm.Open("postgres", connectionInfo)
-	if err != nil {
-		return nil, err
-	}
-	db.LogMode(true)
-	return &userGorm{
-		db: db,
-	}, nil
-}
-
 func (ug *userGorm) ByID(id uint) (*User, error) {
 	var user User
 	db := ug.db.Where("id = ?", id)
@@ -50,10 +39,6 @@ func (ug *userGorm) Delete(id uint) error {
 	return ug.db.Delete(&user).Error
 }
 
-func (ug *userGorm) Close() error {
-	return ug.db.Close()
-}
-
 func (ug *userGorm) ByRemember(rememberHash string) (*User, error) {
 	var user User
 	err := first(ug.db.Where("remember_hash = ?", rememberHash), &user)
@@ -61,21 +46,6 @@ func (ug *userGorm) ByRemember(rememberHash string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
-}
-
-func (ug *userGorm) DestructiveReset() error {
-	err := ug.db.DropTableIfExists(&User{}).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (ug *userGorm) AutoMigrate() error {
-	if err := ug.db.AutoMigrate(&User{}).Error; err != nil {
-		return err
-	}
-	return nil
 }
 
 func first(db *gorm.DB, dst interface{}) error {

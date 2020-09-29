@@ -25,30 +25,33 @@ func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		postgresInfo.host, postgresInfo.port, postgresInfo.user, postgresInfo.password, postgresInfo.name)
 
-	us, err := models.NewUserService(psqlInfo)
+	services, err := models.NewServices(psqlInfo)
 	if err != nil {
 		panic(err)
 	}
-	defer us.Close()
-	us.DestructiveReset()
-	us.AutoMigrate()
+	defer services.Close()
+	services.DestructiveReset()
+	userC := controllers.NewUsers(services.User)
+	reviewC := controllers.NewReviews(services.Review)
 
-	fmt.Println("connected!!")
-	userC := controllers.NewUsers(us)
 	requireUserMw := middleware.RequireUser{
-		UserService: us,
+		UserService: services.User,
 	}
 
 	getUserInfo := requireUserMw.ApplFn(userC.GetUserInfo)
+	createReview := requireUserMw.ApplFn(reviewC.Create)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", helloHandler)
 	r.HandleFunc("/api/register", userC.Register).Methods("POST")
 	r.HandleFunc("/api/login", userC.Login).Methods("POST")
 	r.HandleFunc("/api/getUserInfo", getUserInfo).Methods("GET")
+	r.HandleFunc("/api/review", createReview).Methods("POST")
+
 	handler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
 	}).Handler(r)
+
 	http.ListenAndServe(":"+GetPortNumber(), handler)
 }
