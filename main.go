@@ -49,7 +49,7 @@ func main() {
 	r.HandleFunc("/api/review", createReview).Methods("POST")
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
+		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
 	}).Handler(r)
 
