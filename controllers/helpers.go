@@ -13,7 +13,7 @@ func parseResponse(r *http.Request, dst interface{}) error {
 	return nil
 }
 
-func respondWithPayload(w http.ResponseWriter, statusCode int, payload interface{}) {
+func RespondWithPayload(w http.ResponseWriter, statusCode int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(payload)
