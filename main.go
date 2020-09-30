@@ -14,7 +14,7 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world")
+	fmt.Fprintf(w, "Hello world updated")
 }
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 	r.HandleFunc("/api/review", createReview).Methods("POST")
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000", "https://renters-review.herokuapp.com/"},
+		AllowedOrigins:   []string{"http://localhost:3000", "https://renters-review.herokuapp.com"},
 		AllowCredentials: true,
 	}).Handler(r)
 
