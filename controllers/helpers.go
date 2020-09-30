@@ -15,7 +15,6 @@ func parseResponse(r *http.Request, dst interface{}) error {
 
 func RespondWithPayload(w http.ResponseWriter, statusCode int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(payload)
 }
