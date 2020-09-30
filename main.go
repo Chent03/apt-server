@@ -50,6 +50,8 @@ func main() {
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000", "https://renters-review.herokuapp.com"},
+		AllowedMethods:   []string{"POST", "GET", "OPTIONS", "PUT"},
+		AllowedHeaders:   []string{"Accept", "Accept-Language", "Content-Type"},
 		AllowCredentials: true,
 	}).Handler(r)
 
