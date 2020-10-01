@@ -49,10 +49,10 @@ func main() {
 	r.HandleFunc("/api/review", createReview).Methods("POST")
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:*", "https://*.herokuapp.com"},
-		AllowedMethods:   []string{"POST", "GET", "OPTIONS", "PUT"},
-		AllowedHeaders:   []string{"Accept", "X-Requested-With", "Authorization", "Accept-Language", "Content-Type", "Access-Control-Allow-Origin", "Set-Cookie"},
-		ExposedHeaders:   []string{"Set-Cookie", "remember_token"},
+		AllowedOrigins: []string{"http://localhost:*", "https://*.herokuapp.com"},
+		AllowedMethods: []string{"POST", "GET", "OPTIONS", "PUT"},
+		// AllowedHeaders:   []string{"Accept", "X-Requested-With", "Authorization", "Accept-Language", "Content-Type", "Access-Control-Allow-Origin", "Set-Cookie"},
+		// ExposedHeaders:   []string{"Set-Cookie", "remember_token"},
 		AllowCredentials: true,
 	}).Handler(r)
 
