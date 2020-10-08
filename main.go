@@ -14,7 +14,7 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world fuufufu")
+	fmt.Fprintf(w, "Hello world")
 }
 
 func main() {
@@ -40,19 +40,22 @@ func main() {
 
 	getUserInfo := requireUserMw.ApplFn(userC.GetUserInfo)
 	createReview := requireUserMw.ApplFn(reviewC.Create)
+	getUserReview := requireUserMw.ApplFn(reviewC.GetByUserID)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", helloHandler)
 	r.HandleFunc("/api/register", userC.Register).Methods("POST")
-	r.HandleFunc("/api/login", userC.Login).Methods("POST")
+	r.HandleFunc("/api/signIn", userC.Login).Methods("POST")
 	r.HandleFunc("/api/getUserInfo", getUserInfo).Methods("GET")
 	r.HandleFunc("/api/review", createReview).Methods("POST")
+	r.HandleFunc("/api/getUserReviews", getUserReview).Methods("GET")
+	r.HandleFunc("/api/getAllReviews", reviewC.GetReviews).Methods("GET")
 
 	handler := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:*", "https://*.herokuapp.com"},
-		AllowedMethods: []string{"POST", "GET", "OPTIONS", "PUT"},
-		// AllowedHeaders:   []string{"Accept", "X-Requested-With", "Authorization", "Accept-Language", "Content-Type", "Access-Control-Allow-Origin", "Set-Cookie"},
-		// ExposedHeaders:   []string{"Set-Cookie", "remember_token"},
+		AllowedOrigins:   []string{"http://localhost:*", "https://*.herokuapp.com"},
+		AllowedMethods:   []string{"POST", "GET", "OPTIONS", "PUT"},
+		AllowedHeaders:   []string{"Accept", "X-Requested-With", "Authorization", "Accept-Language", "Content-Type", "Access-Control-Allow-Origin", "Set-Cookie"},
+		ExposedHeaders:   []string{"Set-Cookie", "remember_token"},
 		AllowCredentials: true,
 	}).Handler(r)
 

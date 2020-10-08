@@ -8,13 +8,20 @@ import (
 
 type Review struct {
 	gorm.Model
-	UserID uint   `gorm:"not_null";index`
-	Review string `gorm:"not_null"`
+	UserID  uint   `json:"userID"; gorm:"not_null"; index`
+	Title   string `json:"title"; gorm:"not_null";`
+	Review  string `json:"review"; gorm:"not_null";`
+	Name    string `json:"name"; gorm:"not_null;`
+	Type    string `json:"type"; gorm:"not_null;`
+	Address string `json:"address"; gorm:"not_null;`
+	Rating  uint   `json:"rating"; gorm:not_null;`
 }
 
 type ReviewDB interface {
 	ByID(id uint) (*Review, error)
+	ByUser(userID uint) ([]Review, error)
 	Create(review *Review) error
+	GetReviews() ([]Review, error)
 }
 
 type ReviewService interface {
@@ -62,6 +69,24 @@ func (rg *reviewGorm) ByID(id uint) (*Review, error) {
 		return nil, err
 	}
 	return &review, nil
+}
+
+func (rg *reviewGorm) GetReviews() ([]Review, error) {
+	var reviews []Review
+	err := rg.db.Find(&reviews).Error
+	if err != nil {
+		return nil, err
+	}
+	return reviews, nil
+}
+
+func (rg *reviewGorm) ByUser(userID uint) ([]Review, error) {
+	var reviews []Review
+	err := rg.db.Where("user_id = ?", userID).Find(&reviews).Error
+	if err != nil {
+		return nil, err
+	}
+	return reviews, nil
 }
 
 func runReviewValFns(review *Review, fns ...reviewValFn) error {
